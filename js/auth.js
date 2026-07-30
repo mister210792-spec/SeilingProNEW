@@ -1,4 +1,10 @@
-// js/auth.js
+// js/auth.js - ПРОСТАЯ ВЕРСИЯ
+
+const ADMIN_EMAILS = [
+    'a5mister210792@gmail.com',
+    'rustem.khusnutdinov.1992@mail.ru',
+    'mister210792@gmail.com'
+];
 
 function handleLogin() {
     const email = document.getElementById('email').value;
@@ -47,9 +53,7 @@ function toggleAuthForms() {
     } else {
         loginForm.style.display = 'none';
         regForm.style.display = 'block';
-        // При открытии формы регистрации сбрасываем выбор на FREE
         selectPlan('free');
-        // Очищаем временные данные
         window.tempLogoBase64 = null;
         const preview = document.getElementById('reg-logo-preview');
         if (preview) {
@@ -58,13 +62,11 @@ function toggleAuthForms() {
     }
 }
 
-// Обновленная функция выбора тарифа
 function selectPlan(plan) {
     window.selectedRegPlan = plan;
     document.getElementById('p-free').classList.toggle('active', plan === 'free');
     document.getElementById('p-pro').classList.toggle('active', plan === 'pro');
     
-    // Показываем/скрываем блок данных компании в зависимости от выбранного тарифа
     const companyBlock = document.getElementById('company-data-block');
     if (companyBlock) {
         companyBlock.style.display = plan === 'pro' ? 'block' : 'none';
@@ -72,14 +74,12 @@ function selectPlan(plan) {
     }
 }
 
-// Обновленная функция регистрации
 function handleRegister() {
     const name = document.getElementById('reg-name').value;
     const email = document.getElementById('reg-email').value;
     const pass = document.getElementById('reg-pass').value;
     const plan = window.selectedRegPlan || 'free';
     
-    // Проверка обязательных полей
     if(!name || !email || !pass) { 
         alert("Заполните все поля"); 
         return; 
@@ -90,7 +90,6 @@ function handleRegister() {
         return; 
     }
 
-    // Данные компании собираем ТОЛЬКО если выбран PRO
     let companyData = {};
     let companyLogo = null;
     
@@ -116,7 +115,6 @@ function handleRegister() {
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
         
-        // Валидация для PRO: хотя бы название компании
         if (plan === 'pro' && !companyName) {
             if (!confirm("Вы не заполнили название компании. Это можно будет сделать позже в настройках. Продолжить?")) {
                 return;
@@ -140,7 +138,6 @@ function handleRegister() {
                     registeredAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
-                // Добавляем данные компании только для PRO
                 if (plan === 'pro' && Object.keys(companyData).length > 0) {
                     userData.company = companyData;
                 }
@@ -180,7 +177,6 @@ function handleRegister() {
         });
 }
 
-// Функция для предпросмотра логотипа при регистрации
 function setupLogoPreview() {
     const logoUpload = document.getElementById('reg-logo-upload');
     if (logoUpload) {
@@ -205,21 +201,17 @@ function setupLogoPreview() {
     }
 }
 
-// Инициализация формы регистрации
 function initRegistrationForm() {
     setupLogoPreview();
     
-    // По умолчанию блок компании скрыт (FREE)
     const companyBlock = document.getElementById('company-data-block');
     if (companyBlock) {
         companyBlock.style.display = 'none';
     }
     
-    // Устанавливаем тариф FREE по умолчанию
     window.selectedRegPlan = 'free';
 }
 
-// Вызываем инициализацию при загрузке страницы
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initRegistrationForm);
 } else {
@@ -284,6 +276,115 @@ function linkTelegram() {
     });
 }
 
+// ========================================
+// ⭐ ГЛАВНАЯ ФУНКЦИЯ - ЗАВЕРШЕНИЕ АВТОРИЗАЦИИ
+// ========================================
+
+function completeAuth() {
+    console.log('🔐 Завершение авторизации...');
+    
+    // Скрываем оверлей авторизации
+    const authOverlay = document.getElementById('auth-overlay');
+    if (authOverlay) {
+        authOverlay.style.display = 'none';
+    }
+    
+    // Обновляем информацию о пользователе в шапке
+    const headerUser = document.getElementById('header-user');
+    const headerPlan = document.getElementById('header-plan');
+    
+    if (headerUser && window.currentUser) {
+        headerUser.textContent = window.currentUser.name || window.currentUser.email || 'Пользователь';
+    }
+    
+    if (headerPlan && window.currentUser) {
+        const plan = window.currentUser.plan || 'free';
+        headerPlan.textContent = 'План: ' + plan.toUpperCase();
+        
+        if (plan === 'pro') {
+            headerPlan.style.background = 'var(--gold)';
+            headerPlan.style.color = 'var(--dark)';
+        } else {
+            headerPlan.style.background = '';
+            headerPlan.style.color = '';
+        }
+    }
+    
+    // Загружаем данные компании
+    if (typeof loadCompanyData === 'function') {
+        loadCompanyData();
+    }
+    
+    // Загружаем все настройки
+    if (typeof loadAllSettings === 'function') {
+        loadAllSettings();
+    }
+    
+    // Загружаем кастомные элементы
+    if (window.currentUser && window.currentUser.uid && window.db) {
+        if (typeof loadCustomElementsFromFirestore === 'function') {
+            loadCustomElementsFromFirestore(window.currentUser.uid).then(() => {
+                if (typeof initSelectors === 'function') initSelectors();
+            });
+        }
+    } else {
+        if (typeof initSelectors === 'function') initSelectors();
+    }
+    
+    // Проверка лимитов для FREE плана
+    if (window.currentUser && window.currentUser.plan === 'free' && window.rooms && window.rooms.length > 1) {
+        window.rooms = window.rooms.slice(0, 1);
+        if (typeof renderTabs === 'function') renderTabs();
+    } else if (window.rooms && window.rooms.length === 0) {
+        setTimeout(() => {
+            if (typeof showRoomTypeModal === 'function') {
+                showRoomTypeModal();
+            }
+        }, 500);
+    }
+    
+    // Обновляем отображение плана
+    if (typeof updatePlanDisplay === 'function') {
+        updatePlanDisplay();
+    }
+    
+    // Показываем админ-панель если админ
+    if (typeof updateAdminPanelVisibility === 'function') {
+        setTimeout(() => {
+            updateAdminPanelVisibility();
+        }, 500);
+    }
+    
+    // Устанавливаем масштаб для комнаты 5x5
+    if (typeof setScaleFor5x5 === 'function') {
+        setTimeout(() => {
+            setScaleFor5x5();
+        }, 100);
+    }
+    
+    // Инициализируем мобильные обработчики
+    if (typeof initMobileHandlers === 'function') {
+        initMobileHandlers();
+    }
+    
+    // Инициализируем систему компании
+    if (typeof initCompanySystem === 'function') {
+        initCompanySystem();
+    }
+    
+    // Рендерим чертеж
+    if (typeof draw === 'function') {
+        draw();
+    }
+    
+    // Обновляем статистику
+    if (typeof updateStats === 'function') {
+        updateStats();
+    }
+    
+    console.log('✅ Авторизация завершена, приложение готово');
+}
+
 // ========== ЭКСПОРТ ==========
 window.handleLogin = handleLogin;
 window.handleRegister = handleRegister;
@@ -292,5 +393,7 @@ window.selectPlan = selectPlan;
 window.handleLogout = handleLogout;
 window.copyToClipboard = copyToClipboard;
 window.linkTelegram = linkTelegram;
+window.completeAuth = completeAuth;
+window.ADMIN_EMAILS = ADMIN_EMAILS;
 
 console.log("✅ Модуль auth.js загружен");
