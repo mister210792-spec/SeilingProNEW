@@ -1956,3 +1956,242 @@ circle[stroke="#e74c3c"][r="8"] {
     background: var(--primary);
     border-radius: 10px;
 }
+/* ========================================
+   СТИЛИ ДЛЯ CAD-ИНТЕРФЕЙСА
+   ======================================== */
+
+/* Панель инструментов CAD */
+#cad-toolbar {
+    position: absolute !important;
+    top: 10px !important;
+    left: 10px !important;
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    padding: 5px !important;
+    display: flex !important;
+    gap: 2px !important;
+    z-index: 100 !important;
+    flex-wrap: wrap !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+#cad-toolbar button {
+    padding: 8px 12px !important;
+    border: none !important;
+    border-radius: 4px !important;
+    background: transparent !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    transition: all 0.2s !important;
+    white-space: nowrap !important;
+}
+
+#cad-toolbar button:hover {
+    background: #f0f0f0 !important;
+}
+
+#cad-toolbar button.active {
+    background: #00bcd4 !important;
+    color: white !important;
+}
+
+/* Командная строка */
+#cad-command-line {
+    position: absolute !important;
+    bottom: 10px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background: rgba(44, 62, 80, 0.95) !important;
+    border-radius: 8px !important;
+    padding: 8px 15px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    z-index: 100 !important;
+    min-width: 300px !important;
+    max-width: 80% !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+    border: 1px solid rgba(0,188,212,0.3) !important;
+}
+
+#cad-command-line input {
+    flex: 1 !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: white !important;
+    font-family: 'Courier New', monospace !important;
+    font-size: 14px !important;
+    padding: 5px 0 !important;
+}
+
+#cad-command-line input::placeholder {
+    color: rgba(255,255,255,0.5) !important;
+}
+
+/* Панель слоев */
+#cad-layer-panel {
+    position: absolute !important;
+    top: 60px !important;
+    right: 10px !important;
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    padding: 10px !important;
+    z-index: 100 !important;
+    min-width: 150px !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+#cad-layer-panel .layer-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 4px 5px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    transition: background 0.2s !important;
+}
+
+#cad-layer-panel .layer-item:hover {
+    background: #f5f5f5 !important;
+}
+
+#cad-layer-panel .layer-item.active {
+    font-weight: bold !important;
+    color: #00bcd4 !important;
+}
+
+/* Панель свойств */
+#cad-property-panel {
+    position: absolute !important;
+    bottom: 60px !important;
+    right: 10px !important;
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    padding: 10px !important;
+    z-index: 100 !important;
+    min-width: 200px !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+/* Статусная строка */
+#status-bar {
+    position: absolute !important;
+    bottom: 50px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background: rgba(0,0,0,0.7) !important;
+    color: #aaa !important;
+    padding: 4px 12px !important;
+    border-radius: 4px !important;
+    font-size: 11px !important;
+    font-family: 'Courier New', monospace !important;
+    z-index: 50 !important;
+    pointer-events: none !important;
+}
+
+/* Контекстное меню */
+#context-menu {
+    position: fixed !important;
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
+    padding: 5px 0 !important;
+    z-index: 10000 !important;
+    min-width: 180px !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+#context-menu .menu-item {
+    padding: 8px 15px !important;
+    cursor: pointer !important;
+    font-size: 13px !important;
+    transition: background 0.2s !important;
+}
+
+#context-menu .menu-item:hover {
+    background: #f0f0f0 !important;
+}
+
+#context-menu .menu-divider {
+    height: 1px !important;
+    background: #e0e0e0 !important;
+    margin: 5px 10px !important;
+}
+
+/* Скрытие/показ элементов */
+.hidden {
+    display: none !important;
+}
+
+/* Мобильная адаптация для CAD */
+@media (max-width: 768px) {
+    #cad-toolbar {
+        top: 50px !important;
+        left: 5px !important;
+        padding: 3px !important;
+        flex-wrap: wrap !important;
+        max-width: 80% !important;
+    }
+    
+    #cad-toolbar button {
+        padding: 6px 8px !important;
+        font-size: 10px !important;
+    }
+    
+    #cad-command-line {
+        min-width: auto !important;
+        max-width: 95% !important;
+        bottom: 60px !important;
+        padding: 6px 10px !important;
+    }
+    
+    #cad-command-line input {
+        font-size: 12px !important;
+    }
+    
+    #cad-layer-panel {
+        top: auto !important;
+        bottom: 80px !important;
+        right: 5px !important;
+        max-height: 150px !important;
+        min-width: 120px !important;
+    }
+    
+    #cad-property-panel {
+        display: none !important;
+    }
+}
+
+/* Анимации */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#cad-toolbar,
+#cad-command-line,
+#cad-layer-panel {
+    animation: fadeIn 0.3s ease;
+}
