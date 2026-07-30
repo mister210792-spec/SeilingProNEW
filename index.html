@@ -829,5 +829,81 @@ function addModeToggle() {
     toolbar.appendChild(toggleBtn);
 }
 </script>
+    <!-- ВСТАВЬТЕ ЭТО ПЕРЕД </body> -->
+
+<script>
+// ========================================
+// ПРОСТОЕ ВКЛЮЧЕНИЕ CAD-РЕЖИМА
+// ========================================
+
+function enableCADMode() {
+    alert('🎨 Профессиональный режим включен!\n\n' +
+          'Функции:\n' +
+          '• 🖱️ Выбор объектов кликом\n' +
+          '• 📏 Линия, Прямоугольник, Круг\n' +
+          '• ⌨️ Командная строка (внизу)\n' +
+          '• 📑 Слои (панель справа)\n' +
+          '• 🔄 Undo/Redo (Ctrl+Z / Ctrl+Y)\n' +
+          '• 🗑️ Delete для удаления\n\n' +
+          'Инструменты появятся на холсте!');
+    
+    // Показываем CAD инструменты
+    const toolbar = document.getElementById('cad-toolbar');
+    if (toolbar) {
+        toolbar.style.display = 'flex';
+    }
+    
+    const cmdLine = document.getElementById('cad-command-line');
+    if (cmdLine) {
+        cmdLine.style.display = 'flex';
+    }
+    
+    // Добавляем подсказку
+    const container = document.querySelector('.drawing-zone');
+    if (container) {
+        const hint = document.createElement('div');
+        hint.id = 'cad-hint';
+        hint.style.cssText = `
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 50;
+            text-align: center;
+            animation: fadeOut 5s forwards;
+            pointer-events: none;
+        `;
+        hint.innerHTML = `
+            🎯 Выберите инструмент на панели слева<br>
+            ⌨️ Или введите команду в строке внизу<br>
+            📖 Например: <b>line 0 0 1000 1000</b>
+        `;
+        container.appendChild(hint);
+        
+        setTimeout(() => {
+            if (hint) hint.remove();
+        }, 5000);
+    }
+    
+    // Добавляем анимацию исчезновения
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Показываем кнопку в консоли
+console.log('💡 Введите enableCADMode() для включения профессионального режима');
+</script>
 
 </script></html>
