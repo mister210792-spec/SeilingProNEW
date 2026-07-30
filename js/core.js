@@ -1364,6 +1364,83 @@ function closeModal(modalId, onClose = null) {
         }
     }
 }
+// ========================================
+// СОВМЕСТИМОСТЬ С CAD-СИСТЕМОЙ
+// ========================================
+
+// Переопределяем функцию draw для работы с CAD
+const originalDraw = window.draw;
+window.draw = function(isExport = false) {
+    if (isCADMode && cadSystem) {
+        // Используем CAD рендерер
+        cadRenderer.render();
+        updateCADStats();
+        return;
+    }
+    
+    // Используем старую систему
+    if (typeof originalDraw === 'function') {
+        originalDraw(isExport);
+    }
+};
+
+// Переопределяем addRoom
+const originalAddRoom = window.addRoom;
+window.addRoom = function() {
+    if (isCADMode && cadSystem) {
+        // В CAD режиме создаем новую комнату через слой
+        const layerId = cadSystem.addLayer(`Комната ${Object.keys(cadSystem.layers).length}`);
+        cadSystem.setCurrentLayer(layerId);
+        cadRenderer.render();
+        showNotification('✅ Новая комната создана в CAD режиме');
+        return;
+    }
+    
+    if (typeof originalAddRoom === 'function') {
+        originalAddRoom();
+    }
+};
+
+// Переопределяем generateFullEstimate
+const originalGenerateFullEstimate = window.generateFullEstimate;
+window.generateFullEstimate = function() {
+    if (isCADMode && cadSystem) {
+        generateCADEstimate();
+        return;
+    }
+    
+    if (typeof originalGenerateFullEstimate === 'function') {
+        originalGenerateFullEstimate();
+    }
+};
+
+// Переопределяем saveProject
+const originalSaveProject = window.saveProject;
+window.saveProject = function() {
+    if (isCADMode && cadSystem) {
+        saveProjectWithCAD();
+        return;
+    }
+    
+    if (typeof originalSaveProject === 'function') {
+        originalSaveProject();
+    }
+};
+
+// Переопределяем loadProject
+const originalLoadProject = window.loadProject;
+window.loadProject = function(projectId) {
+    if (isCADMode && cadSystem) {
+        loadProjectWithCAD(projectId);
+        return;
+    }
+    
+    if (typeof originalLoadProject === 'function') {
+        originalLoadProject(projectId);
+    }
+};
+
+console.log('✅ Совместимость с CAD системой добавлена');
 
 // ========== ЭКСПОРТ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ==========
 
