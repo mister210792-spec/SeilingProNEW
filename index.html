@@ -8,12 +8,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Ceiling Plan PRO - Мобильная версия</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="shortcut icon" href="/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <meta name="apple-mobile-web-app-title" content="Ceiling PRO" />
-<link rel="manifest" href="manifest.json" />
+<link rel="manifest" href="/site.webmanifest" />
 </head>
 <body>
 
@@ -226,15 +226,6 @@
             </div>
             <p style="font-size: 10px; color: #666; margin-top: 5px;">* Удерживайте <b>Shift</b> для произв. углов / <b>Alt+Drag</b> для копии</p>
         </div>
-        <div class="menu-section" style="border: 2px solid #00bcd4; background: #f0faff;">
-    <h3 style="background: #00bcd4; color: white; border-bottom: none;">🎨 НОВЫЙ РЕЖИМ РИСОВАНИЯ</h3>
-    <button id="enableCADBtn" onclick="enableCADMode()" style="background: #00bcd4; color: white; font-weight: bold; border: none; padding: 15px;">
-        🚀 ВКЛЮЧИТЬ ПРОФЕССИОНАЛЬНЫЙ РЕЖИМ
-    </button>
-    <p style="font-size: 11px; color: #666; margin-top: 8px; text-align: center;">
-        Включает: слои, привязки, командную строку, продвинутые инструменты
-    </p>
-</div>
 
         <div class="menu-section">
             <h3>Освещение</h3>
@@ -776,134 +767,5 @@ if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.
     window.addEventListener('resize', function() {
         updateMobileButtonsVisibility();
     });
-    <!-- В конце тега <body>, после существующих скриптов -->
-
-<!-- НОВЫЕ СКРИПТЫ CAD-СИСТЕМЫ -->
-<script src="js/cad/cad-core.js"></script>
-<script src="js/cad/cad-renderer.js"></script>
-<script src="js/cad/cad-tools.js"></script>
-<script src="js/cad/cad-ui.js"></script>
-<script src="js/cad/cad-integration.js"></script>
-
-<!-- ИНИЦИАЛИЗАЦИЯ CAD СИСТЕМЫ -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Инициализируем CAD систему
-    const cadReady = initCADSystem();
-    
-    if (cadReady) {
-        console.log('✅ CAD система готова к работе');
-        
-        // Добавляем кнопку переключения режимов
-        addModeToggle();
-    }
-});
-
-// Добавляем кнопку переключения режимов в интерфейс
-function addModeToggle() {
-    const toolbar = document.querySelector('.menu-section:first-child');
-    if (!toolbar) return;
-    
-    const toggleBtn = document.createElement('button');
-    toggleBtn.id = 'cad-mode-toggle';
-    toggleBtn.textContent = '🎨 CAD Режим';
-    toggleBtn.style.cssText = `
-        background: #00bcd4;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 10px;
-        width: 100%;
-        transition: all 0.3s;
-    `;
-    
-    toggleBtn.addEventListener('click', function() {
-        toggleCADMode();
-        this.textContent = isCADMode ? '🎨 CAD Режим' : '📐 Классический режим';
-        this.style.background = isCADMode ? '#00bcd4' : '#9e9e9e';
-    });
-    
-    toolbar.appendChild(toggleBtn);
-}
-</script>
-    <!-- ВСТАВЬТЕ ЭТО ПЕРЕД </body> -->
-
-<script>
-// ========================================
-// ПРОСТОЕ ВКЛЮЧЕНИЕ CAD-РЕЖИМА
-// ========================================
-
-function enableCADMode() {
-    alert('🎨 Профессиональный режим включен!\n\n' +
-          'Функции:\n' +
-          '• 🖱️ Выбор объектов кликом\n' +
-          '• 📏 Линия, Прямоугольник, Круг\n' +
-          '• ⌨️ Командная строка (внизу)\n' +
-          '• 📑 Слои (панель справа)\n' +
-          '• 🔄 Undo/Redo (Ctrl+Z / Ctrl+Y)\n' +
-          '• 🗑️ Delete для удаления\n\n' +
-          'Инструменты появятся на холсте!');
-    
-    // Показываем CAD инструменты
-    const toolbar = document.getElementById('cad-toolbar');
-    if (toolbar) {
-        toolbar.style.display = 'flex';
-    }
-    
-    const cmdLine = document.getElementById('cad-command-line');
-    if (cmdLine) {
-        cmdLine.style.display = 'flex';
-    }
-    
-    // Добавляем подсказку
-    const container = document.querySelector('.drawing-zone');
-    if (container) {
-        const hint = document.createElement('div');
-        hint.id = 'cad-hint';
-        hint.style.cssText = `
-            position: absolute;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            z-index: 50;
-            text-align: center;
-            animation: fadeOut 5s forwards;
-            pointer-events: none;
-        `;
-        hint.innerHTML = `
-            🎯 Выберите инструмент на панели слева<br>
-            ⌨️ Или введите команду в строке внизу<br>
-            📖 Например: <b>line 0 0 1000 1000</b>
-        `;
-        container.appendChild(hint);
-        
-        setTimeout(() => {
-            if (hint) hint.remove();
-        }, 5000);
-    }
-    
-    // Добавляем анимацию исчезновения
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            70% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// Показываем кнопку в консоли
-console.log('💡 Введите enableCADMode() для включения профессионального режима');
-</script>
 
 </script></html>
